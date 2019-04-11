@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     humidity = jsonObject.getJSONObject("main").getString("humidity");
                     speed = jsonObject.getJSONObject("wind").getString("speed");
                     deg = jsonObject.getJSONObject("wind").getString("deg");
-                    visibility = jsonObject.getString("visibility");
+                    visibility = jsonObject.getString("visibility"); // добавить обработку исключения
                     description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description");
                     /*
                     Обработка исключения JSON, связанная с возможным отсутствием второго описания погоды. Вызов метода getJSONArray
@@ -188,6 +188,19 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         description1 = null;
                     }
+                    /*
+                    Перевод из гектопаскалей(миллибаров) в мм ртутного столба.
+                    */
+                    double pressureDouble = 0;
+                    int pressureInt = 0;
+                    try {
+                        pressureDouble = Double.parseDouble(pressure);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    pressureDouble = Math.round(pressureDouble / 1.333);
+                    pressureInt = (int) pressureDouble;
+                    pressure = Integer.toString(pressureInt);
                 /*
                 Проверка, полученных данных из строкового объекта deg.
                 Если deg больше 0° и меньше 90°, то ветер северо-восточный.
@@ -202,39 +215,39 @@ public class MainActivity extends AppCompatActivity {
                 */
                     if (description1 != null) {
                         if (Double.parseDouble(deg) > 0 && Double.parseDouble(deg) < 90) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-восточный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-восточный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) > 90 && Double.parseDouble(deg) < 180) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-восточный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-восточный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) > 180 && Double.parseDouble(deg) < 270) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-западный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-западный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) > 270 && Double.parseDouble(deg) < 360) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-западный\\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-западный\\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) == 360) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) == 90) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, восточный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, восточный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) == 180) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, южный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, южный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         } else if (Double.parseDouble(deg) == 270) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, западный\nВидимость: %s м\nНа улице: %s, %s", city, temp, pressure, humidity, speed, visibility, description, description1);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, западный\nВидимость: %s м\nНа улице: %s, %s", temp, pressure, humidity, speed, visibility, description, description1);
                         }
                     } else {
                         if (Double.parseDouble(deg) > 0 && Double.parseDouble(deg) < 90) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-восточный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-восточный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) > 90 && Double.parseDouble(deg) < 180) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-восточный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, юго-восточный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) > 180 && Double.parseDouble(deg) < 270) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%% \nСкорость ветра: %s м/с, юго-западный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%% \nСкорость ветра: %s м/с, юго-западный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) > 270 && Double.parseDouble(deg) < 360) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-западный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северо-западный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) == 360) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, северный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, северный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) == 90) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, восточный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, восточный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) == 180) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, южный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, южный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         } else if (Double.parseDouble(deg) == 270) {
-                            weather = String.format("%s\nТемпература: %s ℃\nАтмосферное давление: %s mb\nВлажность: %s%%\nСкорость ветра: %s м/с, западный\nВидимость: %s м\nНа улице: %s", city, temp, pressure, humidity, speed, visibility, description);
+                            weather = String.format("Температура: %s ℃\nАтмосферное давление: %s мм\nВлажность: %s%%\nСкорость ветра: %s м/с, западный\nВидимость: %s м\nНа улице: %s", temp, pressure, humidity, speed, visibility, description);
                         }
                     }
                 }
